@@ -9,6 +9,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         printGameField();
         shipCoordinates(scanner);
+        scanner.close();
     }
     // Print game field.
     private static void printGameField() {
@@ -65,11 +66,11 @@ public class Main {
 
         // At this point, the coordinates are valid.
         System.out.println("Coordinates are valid.");
-
-        // TODO: Add method to figure out ship length.
-        int length = shipLength(col1, col2);
+        // Calculates the ship's length.
+        int length = shipLength(row1, col1, row2, col2);
         System.out.println("Length: " + length);
-        // TODO: Add method to figure out parts.
+        // Calculates the ship's parts.
+        shipParts(row1, col1, row2, col2);
     }
 
     private static int[] parseCoordinate(String coord) {
@@ -94,17 +95,37 @@ public class Main {
         return row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE;
     }
 
-    private static int shipLength(int col1, int col2) {
+    private static int shipLength(int row1, int col1, int row2, int col2) {
         int shipLength;
-        if (col1 > col2) {
-            shipLength = (col1 - col2) + 1;
+        if (row1 == row2) {
+            // Horizontal ship
+            shipLength = Math.abs(col2 - col1) + 1;
         } else {
-            shipLength = (col2 - col1) + 1;
+            // Vertical ship
+            shipLength = Math.abs(row2 - row1) + 1;
         }
         return shipLength;
     }
 
-    private static void shipParts() {
-        // TODO: Add code.
+    private static void shipParts(int row1, int col1, int row2, int col2) {
+        System.out.print("Parts: ");
+        if (row1 == row2) {
+            // Horizontal ship
+            int startCol = Math.min(col1, col2);
+            int endCol = Math.max(col1, col2);
+            char rowChar = (char) ('A' + row1);
+            for (int col = startCol; col <= endCol; col++) {
+                System.out.print(rowChar + "" + (col + 1) + " ");
+            }
+        } else {
+            // Vertical ship
+            int startRow = Math.min(row1, row2);
+            int endRow = Math.max(row1, row2);
+            int colNumber = col1 + 1; // Since col1 == col2
+            for (int row = startRow; row <= endRow; row++) {
+                char rowChar = (char) ('A' + row);
+                System.out.print(rowChar + "" + colNumber + " ");
+            }
+        }
     }
 }
