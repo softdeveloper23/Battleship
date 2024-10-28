@@ -15,6 +15,17 @@ public class Main {
 
         // Initialize the game field.
         GameField gameField = new GameField(GRID_SIZE);
+
+        // Print the initial empty game field.
+        gameField.print();
+
+        // Get ship coordinates from the player.
+        Ship ship = getShipFromInput(scanner);
+
+        // Place the ship on the game field if valid.
+        // TODO: Code method in class.
+
+        scanner.close();
     }
 
     /**
