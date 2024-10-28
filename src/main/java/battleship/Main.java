@@ -28,12 +28,26 @@ public class Main {
     }
 
     private static boolean isOutOfBounds(int row, int col) {
-        // TODO: Code goes here.
-        return false;
+        return row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE;
     }
 
+    /**
+     * Calculates the length of the ship based on its coordinates.
+     *
+     * @param row1 The starting row index.
+     * @param col1 The starting column index.
+     * @param row2 The ending row index.
+     * @param col2 The ending column index.
+     * @return The length of the ship.
+     */
     private static int calculateShipLength(int row1, int col1, int row2, int col2) {
-        return 0;
+        if (row1 == row2) {
+            // Horizontal ship.
+            return Math.abs(col2 - col1) + 1;
+        } else {
+            // Vertical ship.
+            return Math.abs(row2 - row1) + 1;
+        }
     }
 }
 
