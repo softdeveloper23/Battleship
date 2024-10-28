@@ -66,7 +66,9 @@ public class Main {
         // At this point, the coordinates are valid.
         System.out.println("Coordinates are valid.");
 
-        // TODO: Add method to figure out length.
+        // TODO: Add method to figure out ship length.
+        int length = shipLength(col1, col2);
+        System.out.println("Length: " + length);
         // TODO: Add method to figure out parts.
     }
 
@@ -92,8 +94,14 @@ public class Main {
         return row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE;
     }
 
-    private static void shipLength() {
-        // TODO: Add code.
+    private static int shipLength(int col1, int col2) {
+        int shipLength;
+        if (col1 > col2) {
+            shipLength = (col1 - col2) + 1;
+        } else {
+            shipLength = (col2 - col1) + 1;
+        }
+        return shipLength;
     }
 
     private static void shipParts() {
