@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 /**
  * Main class for the Battleship game.
  */
@@ -77,8 +78,31 @@ public class Main {
         System.out.println("Coordinates are valid.");
         System.out.println("Length: " + length);
 
-        // Create and return the Ship object.
-        return new Ship(row1, col1, row2, col2, length);
+        // Create the Ship object.
+        Ship ship = new Ship(row1, col1, row2, col2, length);
+
+        // Print the ship parts.
+        printShipParts(ship);
+
+        // Return the Ship object.
+        return ship;
+    }
+
+    /**
+     * Prints the coordinates (parts) of the ship.
+     *
+     * @param ship The ship whose parts are to be printed.
+     */
+    private static void printShipParts(Ship ship) {
+        System.out.print("Parts: ");
+        List<int[]> shipCoords = ship.getCoordinates();
+
+        for (int[] coord : shipCoords) {
+            char rowChar = (char) ('A' + coord[0]);
+            int colNumber = coord[1] + 1; // Convert to 1-based index
+            System.out.print(rowChar + "" + colNumber + " ");
+        }
+        System.out.println(); // For a new line after listing parts
     }
 
     /**
@@ -233,16 +257,14 @@ class Ship {
 
         if (rowStart == rowEnd) {
             // Horizontal ship.
-            int startCol = Math.min(colStart, colEnd);
-            int endCol = Math.max(colStart, colEnd);
-            for (int col = startCol; col <= endCol; col++) {
+            int step = (colStart <= colEnd) ? 1 : -1;
+            for (int col = colStart; col != colEnd + step; col += step) {
                 coordinates.add(new int[]{rowStart, col});
             }
         } else {
             // Vertical ship.
-            int startRow = Math.min(rowStart, rowEnd);
-            int endRow = Math.max(rowStart, rowEnd);
-            for (int row = startRow; row <= endRow; row++) {
+            int step = (rowStart <= rowEnd) ? 1 : -1;
+            for (int row = rowStart; row != rowEnd + step; row += step) {
                 coordinates.add(new int[]{row, colStart});
             }
         }
