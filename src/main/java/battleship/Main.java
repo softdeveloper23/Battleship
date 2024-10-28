@@ -17,9 +17,57 @@ public class Main {
         GameField gameField = new GameField(GRID_SIZE);
     }
 
+    /**
+     * Prompts the user to enter ship coordinates and creates a Ship object.
+     *
+     * @param scanner The Scanner object for user input.
+     * @return A Ship object if the input is valid; null otherwise.
+     */
     private static Ship getShipFromInput(Scanner scanner) {
-        // TODO: Code goes here.
-        return null;
+        System.out.println("Enter the coordinates of the ship (e.g., A1 A5):");
+        String coordinates = scanner.nextLine();
+
+        // Validation check begins.
+        String[] tokens = coordinates.trim().split("\\s+");
+        if (tokens.length != 2) {
+            System.out.println("Error: You must enter exactly two coordinates.");
+            return null;
+        }
+
+        // Parse the coordinates.
+        int[] coordinate1 = parseCoordinate(tokens[0]);
+        int[] coordinate2 = parseCoordinate(tokens[1]);
+
+        // If parsing failed, exit the method.
+        if (coordinate1 == null || coordinate2 == null) {
+            System.out.println("Error: Invalid coordinate format.");
+            return null;
+        }
+
+        int row1 = coordinate1[0];
+        int col1 = coordinate1[1];
+        int row2 = coordinate2[0];
+        int col2 = coordinate2[1];
+
+        // Check that coordinates are within bounds.
+        if (isOutOfBounds(row1, col1) || isOutOfBounds(row2, col2)) {
+            System.out.println("Error: Coordinates are out of bounds.");
+            return null;
+        }
+
+        // Check that the ship is placed either horizontally or vertically.
+        if (row1 != row2 && col1 != col2) {
+            System.out.println("Error: Ship must be placed horizontally or vertically.");
+            return null;
+        }
+
+        // Calculates the ship's length.
+        int length = calculateShipLength(row1, col1, row2, col2);
+        System.out.println("Coordinates are valid.");
+        System.out.println("Length: " + length);
+
+        // Create and return the Ship object.
+        return new Ship(row1, col1, row2, col2, length);
     }
 
     /**
