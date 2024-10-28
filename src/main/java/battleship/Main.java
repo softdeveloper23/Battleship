@@ -129,7 +129,23 @@ class Ship {
      * @return A list of int arrays representing the ship's coordinates.
      */
     private List<int[]> calculateCoordinates() {
-        // TODO: Code goes here.
+        List<int[]> coordinates = new ArrayList<>();
+
+        if (rowStart == rowEnd) {
+            // Horizontal ship.
+            int startCol = Math.min(colStart, colEnd);
+            int endCol = Math.max(colStart, colEnd);
+            for (int col = startCol; col <= endCol; col++) {
+                coordinates.add(new int[]{rowStart, col});
+            }
+        } else {
+            // Vertical ship.
+            int startRow = Math.min(rowStart, rowEnd);
+            int endRow = Math.max(rowStart, rowEnd);
+            for (int row = startRow; row <= endRow; row++) {
+                coordinates.add(new int[]{row, colStart});
+            }
+        }
         return coordinates;
     }
 
