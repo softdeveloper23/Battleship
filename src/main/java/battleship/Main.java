@@ -1,131 +1,153 @@
 package battleship;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Main class for the Battleship game.
+ */
 public class Main {
     private static final int GRID_SIZE = 10;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        printGameField();
-        shipCoordinates(scanner);
-        scanner.close();
+
+        // Initialize the game field.
+        GameField gameField = new GameField(GRID_SIZE);
     }
-    // Print game field.
-    private static void printGameField() {
-        System.out.print("  ");
-        for (int i = 1; i <= GRID_SIZE; i++) {
+
+    private static Ship getShipFromInput(Scanner scanner) {
+        // TODO: Code goes here.
+        return null;
+    }
+
+    private static int[] parseCoordinate(String coordinate) {
+        // TODO: Code goes here.
+        return null;
+    }
+
+    private static boolean isOutOfBounds(int row, int col) {
+        // TODO: Code goes here.
+        return false;
+    }
+
+    private static int calculateShipLength(int row1, int col1, int row2, int col2) {
+        return 0;
+    }
+}
+
+/**
+ * Represents the game field (grid) for the Battleship game.
+ */
+class GameField {
+    private final int size;
+    private final char[][] grid;
+
+    /**
+     * Initializes the game field with the specified size.
+     *
+     * @param size The size of the grid (e.g., 10 for a 10x10 grid).
+     */
+    public GameField(int size) {
+        this.size = size;
+        this.grid = new char[size][size];
+        // Initialize the grid with '~' to represent water.
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grid[i][j] = '~';
+            }
+        }
+    }
+    /**
+     * Prints the current status of the game field.
+     */
+    public void print() {
+        // Print column numbers.
+        System.out.print(" ");
+        for (int i = 1; i <= size; i++) {
             System.out.print(i + " ");
         }
         System.out.println();
-        for (char letter = 'A'; letter <= 'J'; letter++) {
-            System.out.print(letter + " ");
-            for (int j = 0; j < GRID_SIZE; j++) {
-                System.out.print("~ ");
+
+        // Print each row with its letter label.
+        for (int i = 0; i < size; i++) {
+            char rowLabel = (char) ('A' + i);
+            System.out.print(rowLabel + " ");
+            for (int j = 0; j < size; j++) {
+                System.out.print(grid[j][i] + " ");
             }
             System.out.println();
         }
     }
-    // Ship coordinates
-    private static void shipCoordinates(Scanner scanner) {
-        System.out.println("Enter the coordinates of the ship:");
-        String coordinates = scanner.nextLine();
 
-        // Validation check begins.
-        String[] tokens = coordinates.split(" ");
-        if (tokens.length != 2) {
-            System.out.println("Error: You must enter exactly two coordinates.");
-            return;
-        }
-        // Parse the coordinates.
-        int[] coord1 = parseCoordinate(tokens[0]);
-        int[] coord2 = parseCoordinate(tokens[1]);
+    /**
+     * Places a ship on the game field.
+     *
+     * @param ship The ship to place.
+     * @return True if the ship was placed successfully; false otherwise.
+     */
+    public boolean placeShip(Ship ship) {
+        // TODO: Code logic.
+        return false;
+    }
+}
 
-        // If parsing failed, exit the method.
-        if (coord1 == null || coord2 == null) {
-            System.out.println("Error: Invalid coordinate format.");
-            return;
-        }
+/**
+ * Represents a ship in the Battleship game.
+ */
+class Ship {
+    private final int rowStart;
+    private final int colStart;
+    private final int rowEnd;
+    private final int colEnd;
+    private final int length;
+    private final List<int[]> coordinates;
 
-        int row1 = coord1[0];
-        int col1 = coord1[1];
-        int row2 = coord2[0];
-        int col2 = coord2[1];
+    /**
+     * Creates a ship with the specified coordinates and length.
+     *
+     * @param rowStart Starting row index.
+     * @param colStart Starting column index.
+     * @param rowEnd   Ending row index.
+     * @param colEnd   Ending column index.
+     * @param length   Length of the ship.
+     */
 
-        // Check that coordinates are within bounds.
-        if (isOutOfBounds(row1, col1) || isOutOfBounds(row2, col2)) {
-            System.out.println("Error: Coordinates are out of bounds.");
-            return;
-        }
-
-        // Check that the ship is placed either horizontally or vertically.
-        if (row1 != row2 && col1 != col2) {
-            System.out.println("Error: Ship must be placed horizontally or vertically.");
-            return;
-        }
-
-        // At this point, the coordinates are valid.
-        System.out.println("Coordinates are valid.");
-        // Calculates the ship's length.
-        int length = shipLength(row1, col1, row2, col2);
-        System.out.println("Length: " + length);
-        // Calculates the ship's parts.
-        shipParts(row1, col1, row2, col2);
+    public Ship(int rowStart, int colStart, int rowEnd, int colEnd, int length) {
+        this.rowStart = rowStart;
+        this.colStart = colStart;
+        this.rowEnd = rowEnd;
+        this.colEnd = colEnd;
+        this.length = length;
+        this.coordinates = calculateCoordinates();
     }
 
-    private static int[] parseCoordinate(String coord) {
-        try {
-            // Extract the row letter and the column number.
-            char rowChar = coord.charAt(0);
-            String colStr = coord.substring(1);
-
-            // Convert row letter to row index (0-based).
-            int row = rowChar - 'A';
-            // Convert column string to column index (0-based).
-            int col = Integer.parseInt(colStr) - 1;
-
-            return new int[]{row, col};
-        } catch (Exception e) {
-            // If parsing fails, return null.
-            return null;
-        }
+    /**
+     * Calculates the coordinates occupied by the ship.
+     *
+     * @return A list of int arrays representing the ship's coordinates.
+     */
+    private List<int[]> calculateCoordinates() {
+        // TODO: Code goes here.
+        return coordinates;
     }
 
-    private static boolean isOutOfBounds(int row, int col) {
-        return row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE;
+    /**
+     * Gets the coordinates occupied by the ship.
+     *
+     * @return A list of int arrays representing the ship's coordinates.
+     */
+    public List<int[]> getCoordinates() {
+        return coordinates;
     }
 
-    private static int shipLength(int row1, int col1, int row2, int col2) {
-        int shipLength;
-        if (row1 == row2) {
-            // Horizontal ship
-            shipLength = Math.abs(col2 - col1) + 1;
-        } else {
-            // Vertical ship
-            shipLength = Math.abs(row2 - row1) + 1;
-        }
-        return shipLength;
-    }
-
-    private static void shipParts(int row1, int col1, int row2, int col2) {
-        System.out.print("Parts: ");
-        if (row1 == row2) {
-            // Horizontal ship
-            int startCol = Math.min(col1, col2);
-            int endCol = Math.max(col1, col2);
-            char rowChar = (char) ('A' + row1);
-            for (int col = startCol; col <= endCol; col++) {
-                System.out.print(rowChar + "" + (col + 1) + " ");
-            }
-        } else {
-            // Vertical ship
-            int startRow = Math.min(row1, row2);
-            int endRow = Math.max(row1, row2);
-            int colNumber = col1 + 1; // Since col1 == col2
-            for (int row = startRow; row <= endRow; row++) {
-                char rowChar = (char) ('A' + row);
-                System.out.print(rowChar + "" + colNumber + " ");
-            }
-        }
+    /**
+     * Gets the length of the ship.
+     *
+     * @return The length of the ship.
+     */
+    public int getLength() {
+        return length;
     }
 }
