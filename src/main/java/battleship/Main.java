@@ -22,11 +22,38 @@ public class Main {
         return null;
     }
 
+    /**
+     * Parses a coordinate string into row and column indices.
+     *
+     * @param coordinate The coordinate string (e.g., "A5").
+     * @return An array with row and column indices; null if parsing fails.
+     */
     private static int[] parseCoordinate(String coordinate) {
-        // TODO: Code goes here.
-        return null;
+        try {
+            coordinate = coordinate.trim().toUpperCase();
+            // Extract the row letter and the column number.
+            char rowChar = coordinate.charAt(0);
+            String colStr = coordinate.substring(1);
+
+            // Convert row letter to row index (0-based).
+            int row = rowChar - 'A';
+            // Convert column string to column index (0-based).
+            int col = Integer.parseInt(colStr) - 1;
+
+            return new int[]{row, col};
+        } catch (Exception e) {
+            // If parsing fails, return null.
+            return null;
+        }
     }
 
+    /**
+     * Checks if the given row and column are out of bounds.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return True if out of bounds; false otherwise.
+     */
     private static boolean isOutOfBounds(int row, int col) {
         return row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE;
     }
