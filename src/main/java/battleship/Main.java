@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 /**
  * Main class for the Battleship game.
  */
@@ -17,7 +16,6 @@ public class Main {
         // Initialize the game field.
         GameField gameField = new GameField(GRID_SIZE);
 
-        // Print the initial empty game field.
         gameField.print();
 
         // List of ships to place, ordered from largest to smallest.
@@ -29,13 +27,13 @@ public class Main {
         shipsToPlace.add(new ShipInfo("Destroyer", 2));
 
         // Iterate through each ship and place them on the game field.
-        for (ShipInfo ship : shipsToPlace) {
+        for (ShipInfo shipInfo : shipsToPlace) {
             boolean placed = false;
             while (!placed) {
                 // Prompt the user to enter coordinates for the current ship.
                 Ship ship = getShipFromInput(scanner, shipInfo);
 
-                if (ship != null) {
+                if (ship == null) {
                     // Invalid input; prompt the user again.
                     continue;
                 }
@@ -61,7 +59,7 @@ public class Main {
     /**
      * Prompts the user to enter ship coordinates and creates a Ship object.
      *
-     * @param scanner The Scanner object for user input.
+     * @param scanner  The Scanner object for user input.
      * @param shipInfo Information about the ship to place.
      * @return A Ship object if the input is valid; null otherwise.
      */
@@ -70,12 +68,10 @@ public class Main {
         System.out.print("> ");
         String coordinates = scanner.nextLine();
 
-        // Validation check begins past here.
-
         // Split the input into two tokens based on whitespace.
         String[] tokens = coordinates.trim().split("\\s+");
         if (tokens.length != 2) {
-            System.out.println("Error: You must enter exactly two coordinates.");
+            System.out.println("Error: You must enter exactly two coordinates separated by a space (e.g., A1 A5).");
             return null;
         }
 
@@ -102,7 +98,7 @@ public class Main {
 
         // Check that the ship is placed either horizontally or vertically.
         if (row1 != row2 && col1 != col2) {
-            System.out.println("Error: Ship must be placed horizontally or vertically.");
+            System.out.println("Error: Ship must be placed horizontally or vertically (not diagonally).");
             return null;
         }
 
@@ -121,14 +117,13 @@ public class Main {
         // Optional: Print the ship parts (for debugging or user confirmation).
         printShipParts(ship, shipInfo.getName());
 
-        // Return the Ship object.
         return ship;
     }
 
     /**
      * Prints the coordinates (parts) of the ship in the order specified by the user.
      *
-     * @param ship The ship whose parts are to be printed.
+     * @param ship     The ship whose parts are to be printed.
      * @param shipName The name of the ship (for clarity).
      */
     private static void printShipParts(Ship ship, String shipName) {
@@ -211,43 +206,6 @@ public class Main {
 }
 
 /**
- * Represents information about a ship to be placed on the game field.
- */
-class ShipInfo {
-    private final String name;
-    private final int length;
-
-    /**
-     * Constructs a ShipInfo object with the specified name and length.
-     *
-     * @param name The name of the ship.
-     * @param length The length of the ship in cells.
-     */
-    public ShipInfo(String name, int length) {
-        this.name = name;
-        this.length = length;
-    }
-
-    /**
-     * Gets the name of the ship.
-     *
-     * @return The ship's name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets the length of the ship.
-     *
-     * @return The ship's length.
-     */
-    public int getLength() {
-        return length;
-    }
-}
-
-/**
  * Represents the game field (grid) for the Battleship game.
  */
 class GameField {
@@ -269,6 +227,7 @@ class GameField {
             }
         }
     }
+
     /**
      * Prints the current status of the game field.
      */
@@ -372,7 +331,6 @@ class Ship {
      * @param colEnd   Ending column index.
      * @param length   Length of the ship.
      */
-
     public Ship(int rowStart, int colStart, int rowEnd, int colEnd, int length) {
         this.rowStart = rowStart;
         this.colStart = colStart;
@@ -383,27 +341,27 @@ class Ship {
     }
 
     /**
-     * Calculates the coordinates occupied by the ship.
+     * Calculates the coordinates occupied by the ship in the order specified by the user.
      *
      * @return A list of int arrays representing the ship's coordinates.
      */
     private List<int[]> calculateCoordinates() {
-        List<int[]> coordinates = new ArrayList<>();
+        List<int[]> coords = new ArrayList<>();
 
         if (rowStart == rowEnd) {
             // Horizontal ship.
             int step = (colStart <= colEnd) ? 1 : -1;
             for (int col = colStart; col != colEnd + step; col += step) {
-                coordinates.add(new int[]{rowStart, col});
+                coords.add(new int[]{rowStart, col});
             }
         } else {
             // Vertical ship.
             int step = (rowStart <= rowEnd) ? 1 : -1;
             for (int row = rowStart; row != rowEnd + step; row += step) {
-                coordinates.add(new int[]{row, colStart});
+                coords.add(new int[]{row, colStart});
             }
         }
-        return coordinates;
+        return coords;
     }
 
     /**
@@ -428,7 +386,7 @@ class Ship {
 /**
  * Represents information about a ship to be placed on the game field.
  */
-class ShipInfo{
+class ShipInfo {
     private final String name;
     private final int length;
 
