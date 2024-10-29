@@ -20,18 +20,40 @@ public class Main {
         // Print the initial empty game field.
         gameField.print();
 
-        // Get ship coordinates from the player.
-        Ship ship = getShipFromInput(scanner);
+        // List of ships to place, ordered from largest to smallest.
+        List<ShipInfo> shipsToPlace = new ArrayList<>();
+        shipsToPlace.add(new ShipInfo("Aircraft Carrier", 5));
+        shipsToPlace.add(new ShipInfo("Battleship", 4));
+        shipsToPlace.add(new ShipInfo("Submarine", 3));
+        shipsToPlace.add(new ShipInfo("Cruiser", 3));
+        shipsToPlace.add(new ShipInfo("Destroyer", 2));
 
-        // Place the ship on the game field if valid.
-        if (ship != null) {
-            if (gameField.placeShip(ship)) {
-                // Print the game field with the ship placed
-                gameField.print();
-            } else {
-                System.out.println("Error: Cannot place ship at the specified coordinates.");
+        // Iterate through each ship and place them on the game field.
+        for (ShipInfo ship : shipsToPlace) {
+            boolean placed = false;
+            while (!placed) {
+                // Prompt the user to enter coordinates for the current ship.
+                Ship ship = getShipFromInput(scanner, shipInfo);
+
+                if (ship != null) {
+                    // Invalid input; prompt the user again.
+                    continue;
+                }
+
+                // Attempt to place the ship on the game field.
+                if (gameField.placeShip(ship)) {
+                    // Successfully placed the ship; print the updated game field.
+                    System.out.println(shipInfo.getName() + " placed successfully.");
+                    gameField.print();
+                    placed = true; // Move on to the next ship.
+                } else {
+                    // Failed to place the ship (e.g., overlapping or adjacent); prompt again.
+                    System.out.println("Error: Cannot place " + shipInfo.getName() + " at the specified coordinates.");
+                }
             }
         }
+
+        System.out.println("All ships have been placed successfully!");
 
         scanner.close();
     }
@@ -40,13 +62,17 @@ public class Main {
      * Prompts the user to enter ship coordinates and creates a Ship object.
      *
      * @param scanner The Scanner object for user input.
+     * @param shipInfo Information about the ship to place.
      * @return A Ship object if the input is valid; null otherwise.
      */
-    private static Ship getShipFromInput(Scanner scanner) {
-        System.out.println("Enter the coordinates of the ship (e.g., A1 A5):");
+    private static Ship getShipFromInput(Scanner scanner, ShipInfo shipInfo) {
+        System.out.println("Enter the coordinates of the " + shipInfo.getName() + " (" + shipInfo.getLength() + " cells):");
+        System.out.print("> ");
         String coordinates = scanner.nextLine();
 
-        // Validation check begins.
+        // Validation check begins past here.
+
+        // Split the input into two tokens based on whitespace.
         String[] tokens = coordinates.trim().split("\\s+");
         if (tokens.length != 2) {
             System.out.println("Error: You must enter exactly two coordinates.");
@@ -59,7 +85,7 @@ public class Main {
 
         // If parsing failed, exit the method.
         if (coordinate1 == null || coordinate2 == null) {
-            System.out.println("Error: Invalid coordinate format.");
+            System.out.println("Error: Invalid coordinate format. Please use the format LetterNumber (e.g., A5).");
             return null;
         }
 
@@ -70,7 +96,7 @@ public class Main {
 
         // Check that coordinates are within bounds.
         if (isOutOfBounds(row1, col1) || isOutOfBounds(row2, col2)) {
-            System.out.println("Error: Coordinates are out of bounds.");
+            System.out.println("Error: Coordinates are out of bounds. Please enter values between A-J and 1-10.");
             return null;
         }
 
@@ -80,16 +106,20 @@ public class Main {
             return null;
         }
 
-        // Calculates the ship's length.
-        int length = calculateShipLength(row1, col1, row2, col2);
-        System.out.println("Coordinates are valid.");
-        System.out.println("Length: " + length);
+        // Calculate the ship's length based on input coordinates.
+        int calculatedLength = calculateShipLength(row1, col1, row2, col2);
 
-        // Create the Ship object.
-        Ship ship = new Ship(row1, col1, row2, col2, length);
+        // Validate the ship's length.
+        if (calculatedLength != shipInfo.getLength()) {
+            System.out.println("Error: The length of the " + shipInfo.getName() + " must be " + shipInfo.getLength() + " cells.");
+            return null;
+        }
 
-        // Print the ship parts.
-        printShipParts(ship);
+        // Create the Ship object with the specified coordinates.
+        Ship ship = new Ship(row1, col1, row2, col2, calculatedLength);
+
+        // Optional: Print the ship parts (for debugging or user confirmation).
+        printShipParts(ship, shipInfo.getName());
 
         // Return the Ship object.
         return ship;
@@ -100,7 +130,7 @@ public class Main {
      *
      * @param ship The ship whose parts are to be printed.
      */
-    private static void printShipParts(Ship ship) {
+    private static void printShipParts(Ship ship, String shipName) {
         System.out.print("Parts: ");
         List<int[]> shipCoords = ship.getCoordinates();
 
