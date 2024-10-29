@@ -301,12 +301,18 @@ class GameField {
         // Get the coordinates of the ship's parts.
         List<int[]> shipCoordinates = ship.getCoordinates();
 
-        // Check if any part of the ship overlaps with existing ships.
+        // Check if any part of the ship overlaps with existing ships or is adjacent.
         for (int[] coord : shipCoordinates) {
             int row = coord[0];
             int col = coord[1];
             if (grid[row][col] == 'O') {
-                System.out.println("Error: Ship is already occupied.");
+                System.out.println("Error: Ship overlaps with another ship.");
+                return false;
+            }
+
+            // Check adjacent cells to enforce no adjacency rule.
+            if (isAdjacent(row, col)) {
+                System.out.println("Error: Ships cannot be adjacent to each other.");
                 return false;
             }
         }
@@ -318,6 +324,31 @@ class GameField {
             grid[row][col] = 'O'; // 'O' represents a ship part.
         }
         return true;
+    }
+
+    /**
+     * Checks if the given cell is adjacent to any existing ship.
+     *
+     * @param row The row index of the cell.
+     * @param col The column index of the cell.
+     * @return True if adjacent to an existing ship; false otherwise.
+     */
+    private boolean isAdjacent(int row, int col) {
+        // Define the relative positions to check for adjacency.
+        int[] deltaRows = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] deltaCols = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int i = 0; i < deltaRows.length; i++) {
+            int newRow = row + deltaRows[i];
+            int newCol = col + deltaCols[i];
+
+            if (newRow >= 0 && newRow < size && newCol >= 0 && newCol < size) {
+                if (grid[newRow][newCol] == 'O') {
+                    return true; // Adjacent to another ship.
+                }
+            }
+        }
+        return false; // No adjacency.
     }
 }
 
