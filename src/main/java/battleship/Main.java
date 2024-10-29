@@ -24,7 +24,14 @@ public class Main {
         Ship ship = getShipFromInput(scanner);
 
         // Place the ship on the game field if valid.
-        // TODO: Code method in class.
+        if (ship != null) {
+            if (gameField.placeShip(ship)) {
+                // Print the game field with the ship placed
+                gameField.print();
+            } else {
+                System.out.println("Error: Cannot place ship at the specified coordinates.");
+            }
+        }
 
         scanner.close();
     }
@@ -188,7 +195,7 @@ class GameField {
      */
     public void print() {
         // Print column numbers.
-        System.out.print(" ");
+        System.out.print("  ");
         for (int i = 1; i <= size; i++) {
             System.out.print(i + " ");
         }
@@ -199,7 +206,7 @@ class GameField {
             char rowLabel = (char) ('A' + i);
             System.out.print(rowLabel + " ");
             for (int j = 0; j < size; j++) {
-                System.out.print(grid[j][i] + " ");
+                System.out.print(grid[i][j] + " ");
             }
             System.out.println();
         }
@@ -212,8 +219,26 @@ class GameField {
      * @return True if the ship was placed successfully; false otherwise.
      */
     public boolean placeShip(Ship ship) {
-        // TODO: Code logic.
-        return false;
+        // Get the coordinates of the ship's parts.
+        List<int[]> shipCoordinates = ship.getCoordinates();
+
+        // Check if any part of the ship overlaps with existing ships.
+        for (int[] coord : shipCoordinates) {
+            int row = coord[0];
+            int col = coord[1];
+            if (grid[row][col] == 'O') {
+                System.out.println("Error: Ship is already occupied.");
+                return false;
+            }
+        }
+
+        // Place the ship on the grid.
+        for (int[] coord : shipCoordinates) {
+            int row = coord[0];
+            int col = coord[1];
+            grid[row][col] = 'O'; // 'O' represents a ship part.
+        }
+        return true;
     }
 }
 
