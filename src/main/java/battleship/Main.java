@@ -211,6 +211,43 @@ public class Main {
 }
 
 /**
+ * Represents information about a ship to be placed on the game field.
+ */
+class ShipInfo {
+    private final String name;
+    private final int length;
+
+    /**
+     * Constructs a ShipInfo object with the specified name and length.
+     *
+     * @param name The name of the ship.
+     * @param length The length of the ship in cells.
+     */
+    public ShipInfo(String name, int length) {
+        this.name = name;
+        this.length = length;
+    }
+
+    /**
+     * Gets the name of the ship.
+     *
+     * @return The ship's name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the length of the ship.
+     *
+     * @return The ship's length.
+     */
+    public int getLength() {
+        return length;
+    }
+}
+
+/**
  * Represents the game field (grid) for the Battleship game.
  */
 class GameField {
