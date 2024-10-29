@@ -126,12 +126,13 @@ public class Main {
     }
 
     /**
-     * Prints the coordinates (parts) of the ship.
+     * Prints the coordinates (parts) of the ship in the order specified by the user.
      *
      * @param ship The ship whose parts are to be printed.
+     * @param shipName The name of the ship (for clarity).
      */
     private static void printShipParts(Ship ship, String shipName) {
-        System.out.print("Parts: ");
+        System.out.print("Parts of " + shipName + ": ");
         List<int[]> shipCoords = ship.getCoordinates();
 
         for (int[] coord : shipCoords) {
@@ -155,10 +156,21 @@ public class Main {
             char rowChar = coordinate.charAt(0);
             String colStr = coordinate.substring(1);
 
+            // Validate row character.
+            if (rowChar < 'A' || rowChar > 'J') {
+                return null;
+            }
+
             // Convert row letter to row index (0-based).
             int row = rowChar - 'A';
+
             // Convert column string to column index (0-based).
             int col = Integer.parseInt(colStr) - 1;
+
+            // Validate column number.
+            if (col < 0 || col >= GRID_SIZE) {
+                return null;
+            }
 
             return new int[]{row, col};
         } catch (Exception e) {
