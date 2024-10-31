@@ -283,7 +283,16 @@ class GameField {
             char rowLabel = (char) ('A' + i);
             System.out.print(rowLabel + " ");
             for (int j = 0; j < size; j++) {
-                System.out.print(grid[i][j] + " ");
+                char cell = grid[i][j];
+                if (fogOfWar) {
+                    if (cell == 'O') {
+                        System.out.print("~ "); // Hide the ship under fog.
+                    } else {
+                        System.out.print(cell + " "); // Display hits ('X') and misses ('M') as is.
+                    }
+                } else {
+                    System.out.print(cell + " "); // Display the full field.
+                }
             }
             System.out.println();
         }
