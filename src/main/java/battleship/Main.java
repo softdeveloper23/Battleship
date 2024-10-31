@@ -270,7 +270,7 @@ class GameField {
     /**
      * Prints the current status of the game field.
      */
-    public void print() {
+    public void print(boolean fogOfWar) {
         // Print column numbers.
         System.out.print("  ");
         for (int i = 1; i <= size; i++) {
