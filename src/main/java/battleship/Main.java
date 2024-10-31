@@ -330,6 +330,22 @@ class GameField {
         }
         return false; // No adjacency.
     }
+    /**
+     * Processes a shot at the given coordinates.
+     *
+     * @param row The row index of the shot.
+     * @param col The column index of the shot.
+     * @return True if it's a hit; false if it's a miss.
+     */
+    public boolean processShot(int row, int col) {
+        if (grid[row][col] == 'O') {
+            grid[row][col] = 'X'; // Mark hit
+            return true;
+        } else {
+            grid[row][col] = 'M'; // Mark miss
+            return false;
+        }
+    }
 }
 
 /**
