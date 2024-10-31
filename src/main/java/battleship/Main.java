@@ -52,7 +52,12 @@ public class Main {
         }
 
         System.out.println("All ships have been placed successfully!");
+        System.out.println();
+        System.out.println("The game starts!");
 
+        gameField.print();
+        System.out.println();
+        System.out.println("Take a shot!");
         scanner.close();
     }
 
