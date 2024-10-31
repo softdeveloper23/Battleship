@@ -16,7 +16,7 @@ public class Main {
         // Initialize the game field.
         GameField gameField = new GameField(GRID_SIZE);
 
-        gameField.print();
+        gameField.print(false); // Display the full field when placing ships.
 
         // List of ships to place, ordered from largest to smallest.
         List<ShipInfo> shipsToPlace = new ArrayList<>();
@@ -42,7 +42,7 @@ public class Main {
                 if (gameField.placeShip(ship)) {
                     // Successfully placed the ship; print the updated game field.
                     System.out.println(shipInfo.getName() + " placed successfully.");
-                    gameField.print();
+                    gameField.print(false); // Display the full field to show ship placements.
                     placed = true; // Move on to the next ship.
                 } else {
                     // Failed to place the ship (e.g., overlapping or adjacent); prompt again.
@@ -55,9 +55,10 @@ public class Main {
 
         System.out.println();
         System.out.println("The game starts!");
+        System.out.println();
 
         // Display the game field before the shot.
-        gameField.print();
+        gameField.print(true); // Display the field with fog of war.
         System.out.println();
 
         // Prompt the player to take a shot.
@@ -81,16 +82,20 @@ public class Main {
         // Process the shot and update the game field.
         boolean isHit = gameField.processShot(shotCoordinate[0], shotCoordinate[1]);
 
+        // Display the fog of war field.
+        gameField.print(true);
+        System.out.println();
+
         // Display the appropriate message.
         if (isHit) {
             System.out.println("You hit a ship!");
         } else {
             System.out.println("You missed!");
         }
+        System.out.println();
 
         // Display the updated game field.
-        System.out.println();
-        gameField.print();
+        gameField.print(false);
 
         scanner.close();
     }
