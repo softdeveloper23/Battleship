@@ -57,7 +57,23 @@ public class Main {
 
         gameField.print();
         System.out.println();
+        // Prompt user to take a shot.
         System.out.println("Take a shot!");
+        System.out.print("> ");
+        String shotInput = scanner.nextLine();
+
+        int[] shotCoordinate = null;
+        do {
+            shotCoordinate = parseCoordinate(shotInput);
+            if (shotCoordinate == null || isOutOfBounds(shotCoordinate[0], shotCoordinate[1])) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+                System.out.print("> ");
+                shotInput = scanner.nextLine();
+            } else {
+                break;
+            }
+        } while (true);
+
         scanner.close();
     }
 
