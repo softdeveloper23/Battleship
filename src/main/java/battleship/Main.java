@@ -52,16 +52,20 @@ public class Main {
         }
 
         System.out.println("All ships have been placed successfully!");
+
         System.out.println();
         System.out.println("The game starts!");
 
+        // Display the game field before the shot.
         gameField.print();
         System.out.println();
-        // Prompt user to take a shot.
+
+        // Prompt the player to take a shot.
         System.out.println("Take a shot!");
         System.out.print("> ");
         String shotInput = scanner.nextLine();
 
+        // Parse and validate the shot coordinates.
         int[] shotCoordinate = null;
         do {
             shotCoordinate = parseCoordinate(shotInput);
@@ -73,6 +77,20 @@ public class Main {
                 break;
             }
         } while (true);
+
+        // Process the shot and update the game field.
+        boolean isHit = gameField.processShot(shotCoordinate[0], shotCoordinate[1]);
+
+        // Display the appropriate message.
+        if (isHit) {
+            System.out.println("You hit a ship!");
+        } else {
+            System.out.println("You missed!");
+        }
+
+        // Display the updated game field.
+        System.out.println();
+        gameField.print();
 
         scanner.close();
     }
@@ -330,6 +348,7 @@ class GameField {
         }
         return false; // No adjacency.
     }
+
     /**
      * Processes a shot at the given coordinates.
      *
