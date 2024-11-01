@@ -57,47 +57,55 @@ public class Main {
         System.out.println("The game starts!");
         System.out.println();
 
-        // Display the game field before the shot.
-        gameField.print(true); // Display the field with fog of war.
-        System.out.println();
+        // Main game loop
+        while (true) {
+            // Display the game field with fog of war.
+            gameField.print(true);
+            System.out.println();
 
-        // Prompt the player to take a shot.
-        System.out.println("Take a shot!");
-        System.out.print("> ");
-        String shotInput = scanner.nextLine();
+            // Prompt the player to take a shot.
+            System.out.println("Take a shot!");
+            System.out.print("> ");
+            String shotInput = scanner.nextLine();
 
-        // Parse and validate the shot coordinates.
-        int[] shotCoordinate = null;
-        do {
-            shotCoordinate = parseCoordinate(shotInput);
-            if (shotCoordinate == null || isOutOfBounds(shotCoordinate[0], shotCoordinate[1])) {
-                System.out.println("Error! You entered the wrong coordinates! Try again:");
-                System.out.print("> ");
-                shotInput = scanner.nextLine();
-            } else {
-                break;
+            // Parse and validate the shot coordinates.
+            int[] shotCoordinate = null;
+            do {
+                shotCoordinate = parseCoordinate(shotInput);
+                if (shotCoordinate == null || isOutOfBounds(shotCoordinate[0], shotCoordinate[1])) {
+                    System.out.println("Error! You entered the wrong coordinates! Try again:");
+                    System.out.print("> ");
+                    shotInput = scanner.nextLine();
+                } else {
+                    break;
+                }
+            } while (true);
+
+            // Process the shot and update the game field.
+            GameField.ShotResult result = gameField.processShot(shotCoordinate[0], shotCoordinate[1]);
+
+            // Display the fog of war field.
+            gameField.print(true);
+            System.out.println();
+
+            // Display the appropriate message.
+            switch (result) {
+                case MISS:
+                    System.out.println("You missed. Try again:");
+                    break;
+                case HIT:
+                    System.out.println("You hit a ship! Try again:");
+                    break;
+                case SUNK:
+                    if (gameField.areAllShipsSunk()) {
+                        System.out.println("You sank the last ship. You won. Congratulations!");
+                        return; // Exit the game
+                    } else {
+                        System.out.println("You sank a ship! Specify a new target:");
+                    }
+                    break;
             }
-        } while (true);
-
-        // Process the shot and update the game field.
-        boolean isHit = gameField.processShot(shotCoordinate[0], shotCoordinate[1]);
-
-        // Display the fog of war field.
-        gameField.print(true);
-        System.out.println();
-
-        // Display the appropriate message.
-        if (isHit) {
-            System.out.println("You hit a ship!");
-        } else {
-            System.out.println("You missed!");
         }
-        System.out.println();
-
-        // Display the updated game field.
-        gameField.print(false);
-
-        scanner.close();
     }
 
     /**
