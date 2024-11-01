@@ -391,6 +391,7 @@ class Ship {
     private final int colEnd;
     private final int length;
     private final List<int[]> coordinates;
+    private final Set<String> hitCoordinates = new HashSet<>();
 
     /**
      * Creates a ship with the specified coordinates and length.
@@ -450,6 +451,25 @@ class Ship {
      */
     public int getLength() {
         return length;
+    }
+
+    /**
+     * Records a hit on the ship.
+     *
+     * @param row The row index of the hit.
+     * @param col The column index of the hit.
+     */
+    public void hit(int row, int col) {
+        hitCoordinates.add(row + "," + col);
+    }
+
+    /**
+     * Checks if the ship has been sunk.
+     *
+     * @return True if all parts of the ship have been hit; false otherwise.
+     */
+    public boolean isSunk() {
+        return hitCoordinates.size() == coordinates.size();
     }
 }
 
