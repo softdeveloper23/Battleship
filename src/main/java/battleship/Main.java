@@ -498,6 +498,22 @@ class Ship {
     public boolean isSunk() {
         return hitCoordinates.size() == coordinates.size();
     }
+
+    /**
+     * Checks if the ship occupies the given coordinate.
+     *
+     * @param row The row index.
+     * @param col The column index.
+     * @return True if the ship occupies the coordinate; false otherwise.
+     */
+    public boolean containsCoordinate(int row, int col) {
+        for (int[] coord : coordinates) {
+            if (coord[0] == row && coord[1] == col) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 /**
