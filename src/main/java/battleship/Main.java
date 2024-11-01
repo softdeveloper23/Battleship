@@ -414,6 +414,15 @@ class GameField {
             return ShotResult.MISS;
         }
     }
+
+    /**
+     * Checks if all ships have been sunk.
+     *
+     * @return True if all ships are sunk; false otherwise.
+     */
+    public boolean areAllShipsSunk() {
+        return ships.isEmpty();
+    }
 }
 
 /**
