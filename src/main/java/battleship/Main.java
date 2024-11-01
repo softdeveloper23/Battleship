@@ -421,7 +421,12 @@ class GameField {
      * @return True if all ships are sunk; false otherwise.
      */
     public boolean areAllShipsSunk() {
-        return ships.isEmpty();
+        for (Ship ship : ships) {
+            if (!ship.isSunk()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
