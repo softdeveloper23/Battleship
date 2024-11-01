@@ -1,8 +1,6 @@
 package battleship;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Main class for the Battleship game.
@@ -52,7 +50,6 @@ public class Main {
         }
 
         System.out.println("All ships have been placed successfully!");
-
         System.out.println();
         System.out.println("The game starts!");
         System.out.println();
@@ -274,7 +271,6 @@ class GameField {
         SUNK
     }
 
-
     /**
      * Initializes the game field with the specified size.
      *
@@ -285,14 +281,14 @@ class GameField {
         this.grid = new char[size][size];
         // Initialize the grid with '~' to represent water.
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                grid[i][j] = '~';
-            }
+            Arrays.fill(grid[i], '~');
         }
     }
 
     /**
      * Prints the current status of the game field.
+     *
+     * @param fogOfWar If true, hides the ships; otherwise, shows the full field.
      */
     public void print(boolean fogOfWar) {
         // Print column numbers.
@@ -346,10 +342,6 @@ class GameField {
                 System.out.println("Error: Ships cannot be adjacent to each other.");
                 return false;
             }
-
-            // After successfully placing the ship:
-            ships.add(ship);
-            return true;
         }
 
         // Place the ship on the grid.
@@ -358,6 +350,10 @@ class GameField {
             int col = coord[1];
             grid[row][col] = 'O'; // 'O' represents a ship part.
         }
+
+        // Add the ship to the list of ships.
+        ships.add(ship);
+
         return true;
     }
 
@@ -391,7 +387,7 @@ class GameField {
      *
      * @param row The row index of the shot.
      * @param col The column index of the shot.
-     * @return True if it's a hit; false if it's a miss.
+     * @return The result of the shot.
      */
     public ShotResult processShot(int row, int col) {
         if (grid[row][col] == 'O' || grid[row][col] == 'X') {
@@ -401,14 +397,13 @@ class GameField {
                 if (ship.containsCoordinate(row, col)) {
                     ship.hit(row, col);
                     if (ship.isSunk()) {
-                        ships.remove(ship); // Remove the sunk ship from the list
                         return ShotResult.SUNK;
                     } else {
                         return ShotResult.HIT;
                     }
                 }
             }
-            return ShotResult.HIT; // Default to HIT if ship not found (shouldn't happen)
+            return ShotResult.HIT; // Default to HIT if ship not found
         } else {
             grid[row][col] = 'M'; // Mark miss
             return ShotResult.MISS;
@@ -494,12 +489,19 @@ class Ship {
     }
 
     /**
-     * Gets the length of the ship.
+     * Checks if the ship occupies the given coordinate.
      *
-     * @return The length of the ship.
+     * @param row The row index.
+     * @param col The column index.
+     * @return True if the ship occupies the coordinate; false otherwise.
      */
-    public int getLength() {
-        return length;
+    public boolean containsCoordinate(int row, int col) {
+        for (int[] coord : coordinates) {
+            if (coord[0] == row && coord[1] == col) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -522,19 +524,12 @@ class Ship {
     }
 
     /**
-     * Checks if the ship occupies the given coordinate.
+     * Gets the length of the ship.
      *
-     * @param row The row index.
-     * @param col The column index.
-     * @return True if the ship occupies the coordinate; false otherwise.
+     * @return The length of the ship.
      */
-    public boolean containsCoordinate(int row, int col) {
-        for (int[] coord : coordinates) {
-            if (coord[0] == row && coord[1] == col) {
-                return true;
-            }
-        }
-        return false;
+    public int getLength() {
+        return length;
     }
 }
 
