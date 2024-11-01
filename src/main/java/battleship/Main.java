@@ -255,6 +255,17 @@ public class Main {
 class GameField {
     private final int size;
     private final char[][] grid;
+    private final List<Ship> ships = new ArrayList<>();
+
+    /**
+     * Enum to represent the result of a shot.
+     */
+    public enum ShotResult {
+        MISS,
+        HIT,
+        SUNK
+    }
+
 
     /**
      * Initializes the game field with the specified size.
@@ -327,6 +338,10 @@ class GameField {
                 System.out.println("Error: Ships cannot be adjacent to each other.");
                 return false;
             }
+
+            // After successfully placing the ship:
+            ships.add(ship);
+            return true;
         }
 
         // Place the ship on the grid.
@@ -370,13 +385,25 @@ class GameField {
      * @param col The column index of the shot.
      * @return True if it's a hit; false if it's a miss.
      */
-    public boolean processShot(int row, int col) {
-        if (grid[row][col] == 'O') {
+    public ShotResult processShot(int row, int col) {
+        if (grid[row][col] == 'O' || grid[row][col] == 'X') {
             grid[row][col] = 'X'; // Mark hit
-            return true;
+            // Find the ship that was hit
+            for (Ship ship : ships) {
+                if (ship.containsCoordinate(row, col)) {
+                    ship.hit(row, col);
+                    if (ship.isSunk()) {
+                        ships.remove(ship); // Remove the sunk ship from the list
+                        return ShotResult.SUNK;
+                    } else {
+                        return ShotResult.HIT;
+                    }
+                }
+            }
+            return ShotResult.HIT; // Default to HIT if ship not found (shouldn't happen)
         } else {
             grid[row][col] = 'M'; // Mark miss
-            return false;
+            return ShotResult.MISS;
         }
     }
 }
