@@ -11,6 +11,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        // Initialize players
+        Player player1 = new Player("Player 1");
+        Player player2 = new Player("Player 2");
+
         // Initialize the game field.
         GameField gameField = new GameField(GRID_SIZE);
 
