@@ -569,3 +569,22 @@ class ShipInfo {
         return length;
     }
 }
+
+// Player class.
+class Player {
+    private final String name;
+    private final GameField gameField;
+
+    public player(String name) {
+        this.name = name;
+        this.gameField = new GameField(Main.GRID_SIZE);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public GameField getGameField() {
+        return gameField;
+    }
+}
