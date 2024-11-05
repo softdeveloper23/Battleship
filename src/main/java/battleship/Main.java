@@ -6,7 +6,7 @@ import java.util.*;
  * Main class for the Battleship game.
  */
 public class Main {
-    private static final int GRID_SIZE = 10;
+    public static final int GRID_SIZE = 10;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -15,20 +15,51 @@ public class Main {
         Player player1 = new Player("Player 1");
         Player player2 = new Player("Player 2");
 
-        // Initialize the game field.
-        GameField gameField = new GameField(GRID_SIZE);
+        // List of ships to place
+        List<ShipInfo> shipsToPlace = Arrays.asList(
+                new ShipInfo("Aircraft Carrier", 5),
+                new ShipInfo("Battleship", 4),
+                new ShipInfo("Submarine", 3),
+                new ShipInfo("Cruiser", 3),
+                new ShipInfo("Destroyer", 2)
+        );
 
-        gameField.print(false); // Display the full field when placing ships.
+        // Place ships for Player 1
+        placeShips(player1, scanner, shipsToPlace);
 
-        // List of ships to place, ordered from largest to smallest.
-        List<ShipInfo> shipsToPlace = new ArrayList<>();
-        shipsToPlace.add(new ShipInfo("Aircraft Carrier", 5));
-        shipsToPlace.add(new ShipInfo("Battleship", 4));
-        shipsToPlace.add(new ShipInfo("Submarine", 3));
-        shipsToPlace.add(new ShipInfo("Cruiser", 3));
-        shipsToPlace.add(new ShipInfo("Destroyer", 2));
+        // Place ships for Player 2
+        placeShips(player2, scanner, shipsToPlace);
 
-        // Iterate through each ship and place them on the game field.
+        // Main game loop
+        boolean gameOver = false;
+        Player currentPlayer = player1;
+        Player opponent = player2;
+
+        while (!gameOver) {
+            gameOver = takeTurn(currentPlayer, opponent, scanner);
+
+            // Swap players if the game is not over
+            if (!gameOver) {
+                Player temp = currentPlayer;
+                currentPlayer = opponent;
+                opponent = temp;
+            }
+        }
+
+        scanner.close();
+    }
+
+    /**
+     * Handles ship placement for a player.
+     *
+     * @param player        The player placing ships.
+     * @param scanner       Scanner for input.
+     * @param shipsToPlace  List of ships to place.
+     */
+    private static void placeShips(Player player, Scanner scanner, List<ShipInfo> shipsToPlace) {
+        System.out.println(player.getName() + ", place your ships on the game field");
+        player.getGameField().print(false);
+
         for (ShipInfo shipInfo : shipsToPlace) {
             boolean placed = false;
             while (!placed) {
@@ -40,73 +71,97 @@ public class Main {
                     continue;
                 }
 
-                // Attempt to place the ship on the game field.
-                if (gameField.placeShip(ship)) {
+                // Attempt to place the ship on the player's game field.
+                if (player.getGameField().placeShip(ship)) {
                     // Successfully placed the ship; print the updated game field.
                     System.out.println(shipInfo.getName() + " placed successfully.");
-                    gameField.print(false); // Display the full field to show ship placements.
-                    placed = true; // Move on to the next ship.
+                    player.getGameField().print(false);
+                    placed = true;
                 } else {
-                    // Failed to place the ship (e.g., overlapping or adjacent); prompt again.
                     System.out.println("Error: Cannot place " + shipInfo.getName() + " at the specified coordinates.");
                 }
             }
         }
+        promptEnterKey();
+        clearScreen();
+    }
 
-        System.out.println("All ships have been placed successfully!");
+    /**
+     * Handles a player's turn.
+     *
+     * @param currentPlayer The player taking the turn.
+     * @param opponent      The opponent player.
+     * @param scanner       Scanner for input.
+     * @return True if the game is over; false otherwise.
+     */
+    private static boolean takeTurn(Player currentPlayer, Player opponent, Scanner scanner) {
+        // Display the opponent's field with fog of war
+        opponent.getGameField().print(true);
+        System.out.println("---------------------");
+        // Display the current player's own field
+        currentPlayer.getGameField().print(false);
         System.out.println();
-        System.out.println("The game starts!");
-        System.out.println();
 
-        // Main game loop
-        while (true) {
-            // Display the game field with fog of war.
-            gameField.print(true);
-            System.out.println();
+        System.out.println(currentPlayer.getName() + ", it's your turn:");
+        String shotInput;
+        int[] shotCoordinate = null;
 
-            // Prompt the player to take a shot.
-            System.out.println("Take a shot!");
+        do {
             System.out.print("> ");
-            String shotInput = scanner.nextLine();
-
-            // Parse and validate the shot coordinates.
-            int[] shotCoordinate = null;
-            do {
-                shotCoordinate = parseCoordinate(shotInput);
-                if (shotCoordinate == null || isOutOfBounds(shotCoordinate[0], shotCoordinate[1])) {
-                    System.out.println("Error! You entered the wrong coordinates! Try again:");
-                    System.out.print("> ");
-                    shotInput = scanner.nextLine();
-                } else {
-                    break;
-                }
-            } while (true);
-
-            // Process the shot and update the game field.
-            GameField.ShotResult result = gameField.processShot(shotCoordinate[0], shotCoordinate[1]);
-
-            // Display the fog of war field.
-            gameField.print(true);
-            System.out.println();
-
-            // Display the appropriate message.
-            switch (result) {
-                case MISS:
-                    System.out.println("You missed. Try again:");
-                    break;
-                case HIT:
-                    System.out.println("You hit a ship! Try again:");
-                    break;
-                case SUNK:
-                    if (gameField.areAllShipsSunk()) {
-                        System.out.println("You sank the last ship. You won. Congratulations!");
-                        return; // Exit the game
-                    } else {
-                        System.out.println("You sank a ship! Specify a new target:");
-                    }
-                    break;
+            shotInput = scanner.nextLine();
+            shotCoordinate = parseCoordinate(shotInput);
+            if (shotCoordinate == null || isOutOfBounds(shotCoordinate[0], shotCoordinate[1])) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:");
+            } else {
+                break;
             }
+        } while (true);
+
+        // Process the shot on the opponent's game field
+        GameField.ShotResult result = opponent.getGameField().processShot(shotCoordinate[0], shotCoordinate[1]);
+
+        // Update messages based on the result
+        switch (result) {
+            case MISS:
+                System.out.println("You missed!");
+                break;
+            case HIT:
+                System.out.println("You hit a ship!");
+                break;
+            case SUNK:
+                if (opponent.getGameField().areAllShipsSunk()) {
+                    System.out.println("You sank the last ship. You won. Congratulations!");
+                    return true; // Game over
+                } else {
+                    System.out.println("You sank a ship!");
+                }
+                break;
         }
+
+        promptEnterKey();
+        clearScreen();
+        return false; // Continue game
+    }
+
+    /**
+     * Prompts the user to press Enter to continue.
+     */
+    private static void promptEnterKey() {
+        System.out.println("Press Enter and pass the move to another player");
+        try {
+            System.in.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Clears the console screen.
+     */
+    private static void clearScreen() {
+        // Clear the console (works in most terminals)
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 
     /**
@@ -167,28 +222,7 @@ public class Main {
         // Create the Ship object with the specified coordinates.
         Ship ship = new Ship(row1, col1, row2, col2, calculatedLength);
 
-        // Optional: Print the ship parts (for debugging or user confirmation).
-        printShipParts(ship, shipInfo.getName());
-
         return ship;
-    }
-
-    /**
-     * Prints the coordinates (parts) of the ship in the order specified by the user.
-     *
-     * @param ship     The ship whose parts are to be printed.
-     * @param shipName The name of the ship (for clarity).
-     */
-    private static void printShipParts(Ship ship, String shipName) {
-        System.out.print("Parts of " + shipName + ": ");
-        List<int[]> shipCoords = ship.getCoordinates();
-
-        for (int[] coord : shipCoords) {
-            char rowChar = (char) ('A' + coord[0]);
-            int colNumber = coord[1] + 1; // Convert to 1-based index
-            System.out.print(rowChar + "" + colNumber + " ");
-        }
-        System.out.println(); // For a new line after listing parts
     }
 
     /**
@@ -255,6 +289,27 @@ public class Main {
             // Vertical ship.
             return Math.abs(row2 - row1) + 1;
         }
+    }
+}
+
+/**
+ * Represents a player in the game.
+ */
+class Player {
+    private final String name;
+    private final GameField gameField;
+
+    public Player(String name) {
+        this.name = name;
+        this.gameField = new GameField(Main.GRID_SIZE);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public GameField getGameField() {
+        return gameField;
     }
 }
 
@@ -571,24 +626,5 @@ class ShipInfo {
      */
     public int getLength() {
         return length;
-    }
-}
-
-// Player class.
-class Player {
-    private final String name;
-    private final GameField gameField;
-
-    public player(String name) {
-        this.name = name;
-        this.gameField = new GameField(Main.GRID_SIZE);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public GameField getGameField() {
-        return gameField;
     }
 }
